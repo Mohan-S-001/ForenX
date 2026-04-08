@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { Web3Provider } from "./contexts/Web3Context";
@@ -32,7 +32,8 @@ function ProtectedRoute({ children, roles = [] }) {
       <div className="card text-center" style={{ maxWidth: 400, padding: 40 }}>
         <div style={{ fontSize: "3rem", marginBottom: 16 }}>🚫</div>
         <h2>Access Denied</h2>
-        <p style={{ marginTop: 8 }}>You need the <strong>{roles.join(" or ")}</strong> role to access this portal.</p>
+        <p style={{ marginTop: 8, marginBottom: 24 }}>You need the <strong>{roles.join(" or ")}</strong> role to access this portal.</p>
+        <Link to="/" className="btn btn-primary btn-full">Go to my Dashboard</Link>
       </div>
     </div>
   );
@@ -73,6 +74,7 @@ function AppLayout() {
         <Route path="/police"    element={<ProtectedRoute roles={["police","admin"]}><PolicePortal /></ProtectedRoute>} />
         <Route path="/judicial"  element={<ProtectedRoute roles={["judicial","admin"]}><JudicialPortal /></ProtectedRoute>} />
         <Route path="/scan"      element={<ProtectedRoute><QRScanPage /></ProtectedRoute>} />
+        <Route path="/evidence"  element={<ProtectedRoute><QRScanPage /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

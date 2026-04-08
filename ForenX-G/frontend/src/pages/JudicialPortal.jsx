@@ -6,7 +6,7 @@ import ChainOfCustody from "../components/ChainOfCustody";
 import EvidenceCard from "../components/EvidenceCard";
 import TamperAlert from "../components/TamperAlert";
 import { Scale, FileText, Search, Download } from "lucide-react";
-import { formatDate } from "../services/crypto";
+import { formatDate, getIPFSUrl } from "../services/crypto";
 import toast from "react-hot-toast";
 import QRCode from "qrcode";
 
@@ -155,7 +155,7 @@ export default function JudicialPortal() {
               </div>
               {selected.ipfsHash && (
                 <div style={{ marginTop: 12 }}>
-                  <a href={`https://gateway.pinata.cloud/ipfs/${selected.ipfsHash}`} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">
+                  <a href={getIPFSUrl(selected.ipfsHash)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">
                     <Download size={14} /> Download Evidence File (IPFS)
                   </a>
                 </div>
@@ -177,7 +177,7 @@ export default function JudicialPortal() {
                   {selected.labReport.tampered ? "🚨 TAMPERED" : "✅ VERIFIED BY LAB"} — {selected.labReport.notes}
                 </div>
                 {selected.labReport.reportIpfsHash && (
-                  <a href={`https://gateway.pinata.cloud/ipfs/${selected.labReport.reportIpfsHash}`} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">
+                  <a href={getIPFSUrl(selected.labReport.reportIpfsHash)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">
                     View Lab Report (IPFS)
                   </a>
                 )}

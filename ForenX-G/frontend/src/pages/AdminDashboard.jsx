@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth, API } from "../contexts/AuthContext";
 import { Users, FileText, CheckCircle, XCircle, Clock, BarChart3, Shield } from "lucide-react";
-import { shortAddress, formatDate } from "../services/crypto";
+import { shortAddress, formatDate, getIPFSUrl } from "../services/crypto";
 import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
@@ -120,13 +120,13 @@ export default function AdminDashboard() {
                       <div>
                         <div className="form-label">ID Proof (IPFS)</div>
                         {u.idProofCID
-                          ? <a href={`https://gateway.pinata.cloud/ipfs/${u.idProofCID}`} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">View Document</a>
+                          ? <a href={getIPFSUrl(u.idProofCID)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">View Document</a>
                           : <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>Not uploaded</span>}
                       </div>
                       <div>
                         <div className="form-label">Selfie (IPFS)</div>
                         {u.selfieCID
-                          ? <a href={`https://gateway.pinata.cloud/ipfs/${u.selfieCID}`} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">View Selfie</a>
+                          ? <a href={getIPFSUrl(u.selfieCID)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">View Selfie</a>
                           : <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>Not uploaded</span>}
                       </div>
                     </div>

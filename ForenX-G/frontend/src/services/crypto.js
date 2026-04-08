@@ -38,3 +38,10 @@ export const statusColor = (status) => {
   };
   return map[status] || "gray";
 };
+
+// Route IPFS CIDs through our local backend gateway to handle MOCK CIDs gracefully
+export const getIPFSUrl = (cid) => {
+  if (!cid) return "#";
+  return `http://localhost:5001/api/ipfs/${cid}`;
+};
+

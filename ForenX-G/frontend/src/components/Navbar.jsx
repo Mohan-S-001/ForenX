@@ -25,7 +25,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-inner">
         {/* Logo */}
-        <Link to="/" className="navbar-logo" style={{ textDecoration: "none" }}>
+        <Link to={user ? ROLE_PORTALS[user.role] : "/"} className="navbar-logo" style={{ textDecoration: "none" }}>
           <ShieldCheck size={24} style={{ color: "#3b82f6" }} />
           <span>ForenX</span>
         </Link>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ChainOfCustody from "../components/ChainOfCustody";
 import EvidenceCard from "../components/EvidenceCard";
 import { ShieldCheck, FileText, CheckCircle, XCircle, Search } from "lucide-react";
-import { formatDate } from "../services/crypto";
+import { formatDate, getIPFSUrl } from "../services/crypto";
 import toast from "react-hot-toast";
 
 export default function PolicePortal() {
@@ -86,7 +86,9 @@ export default function PolicePortal() {
                       <div><span style={{ color: "var(--text-muted)" }}>Evidence:</span> {c.evidenceCount}</div>
                     </div>
                     <div style={{ marginTop: 10 }}>
-                      <Link to={`/evidence?caseId=${c.caseId}`} className="btn btn-secondary btn-sm">View Evidence</Link>
+                      <button onClick={() => { setTab("evidence"); setSearch(c.caseId); }} className="btn btn-secondary btn-sm">
+                        View Evidence
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -122,7 +124,7 @@ export default function PolicePortal() {
                       <div className={`alert ${selected.labReport.tampered ? "alert-danger" : "alert-success"}`} style={{ marginTop: 6 }}>
                         {selected.labReport.tampered ? "🚨 Tampered" : "✅ Verified"} — {selected.labReport.notes || "No notes"}
                         {selected.labReport.reportIpfsHash && (
-                          <a href={`https://gateway.pinata.cloud/ipfs/${selected.labReport.reportIpfsHash}`} target="_blank" rel="noreferrer" style={{ marginLeft: 12 }} className="btn btn-secondary btn-sm">View Report</a>
+                          <a href={getIPFSUrl(selected.labReport.reportIpfsHash)} target="_blank" rel="noreferrer" style={{ marginLeft: 12 }} className="btn btn-secondary btn-sm">View Report</a>
                         )}
                       </div>
                     </div>

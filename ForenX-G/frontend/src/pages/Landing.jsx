@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { ShieldCheck, Lock, QrCode, Database, Cpu, Eye, ArrowRight, CheckCircle } from "lucide-react";
 
 const FEATURES = [
@@ -19,7 +20,17 @@ const ROLES = [
   { role: "Admin",      color: "red",    icon: "🛡️", path: "/admin" },
 ];
 
+const ROLE_PORTALS = {
+  admin:     "/admin",
+  collector: "/collector",
+  transport: "/transport",
+  lab:       "/lab",
+  police:    "/police",
+  judicial:  "/judicial",
+};
+
 export default function Landing() {
+  const { user } = useAuth();
   return (
     <div style={{ minHeight: "100vh" }}>
       {/* Hero */}
@@ -54,12 +65,20 @@ export default function Landing() {
             blockchain-verified, and transparently tracked — from crime scene to courtroom.
           </p>
           <div className="flex gap-4 justify-center" style={{ flexWrap: "wrap" }}>
-            <Link to="/register" className="btn btn-primary btn-lg">
-              Get Started <ArrowRight size={18} />
-            </Link>
-            <Link to="/login" className="btn btn-secondary btn-lg">
-              Login with MetaMask
-            </Link>
+            {user ? (
+              <Link to={ROLE_PORTALS[user.role]} className="btn btn-primary btn-lg">
+                Go to Dashboard <ArrowRight size={18} />
+              </Link>
+            ) : (
+              <>
+                <Link to="/register" className="btn btn-primary btn-lg">
+                  Get Started <ArrowRight size={18} />
+                </Link>
+                <Link to="/login" className="btn btn-secondary btn-lg">
+                  Login with MetaMask
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -95,7 +114,7 @@ export default function Landing() {
           <p>Each role has a dedicated portal with exactly the permissions they need.</p>
         </div>
         <div className="grid-3">
-          {ROLES.map((r, i) => (
+          {ROLES.filter(r => !user || user.role === "admin" || r.path.includes(user.role)).map((r, i) => (
             <Link key={i} to={r.path} style={{ textDecoration: "none" }}>
               <div className="card" style={{ textAlign: "center", cursor: "pointer" }}>
                 <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>{r.icon}</div>

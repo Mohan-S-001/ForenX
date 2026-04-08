@@ -9,6 +9,7 @@ const kycRoutes      = require("./routes/kyc.routes");
 const evidenceRoutes = require("./routes/evidence.routes");
 const caseRoutes     = require("./routes/case.routes");
 const adminRoutes    = require("./routes/admin.routes");
+const ipfsRoutes     = require("./routes/ipfs.routes");
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -27,6 +28,7 @@ app.use("/api/kyc",      kycRoutes);
 app.use("/api/evidence", evidenceRoutes);
 app.use("/api/cases",    caseRoutes);
 app.use("/api/admin",    adminRoutes);
+app.use("/api/ipfs",     ipfsRoutes);
 
 // ── 404 ───────────────────────────────────────────────────────────────────────
 app.use((req, res) => res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` }));

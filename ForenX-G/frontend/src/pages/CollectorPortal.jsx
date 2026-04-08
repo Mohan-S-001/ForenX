@@ -59,27 +59,25 @@ export default function CollectorPortal() {
       const digitalSignature = await signer.signMessage(signPayload);
       toast.success("Evidence signed with MetaMask");
 
-      // Step 4: Write to blockchain
+      // Step 4 & 5: Save to backend MongoDB & Relayed Blockchain Execute
       setStep(3);
-      const tx = await addEvidence(signer, { evidenceId, fileHash, ipfsHash, sealId, digitalSignature, caseId });
-      const txHash = tx.hash || tx.transactionHash || "";
-      toast.success("Recorded on blockchain");
-
-      // Step 5: Save to backend MongoDB
       const timestamp = new Date().toISOString();
       const innerQRData = { evidenceId, fileHash, ipfsHash, sealId, timestamp, digitalSignature };
       const outerQRData = { evidenceId, sealId, currentStage: "COLLECTED" };
 
-      await API.post("/evidence", {
+      const { data: dbEntry } = await API.post("/evidence", {
         evidenceId, caseId, title, description: desc,
         fileHash, ipfsHash, sealId,
         fileName: file.name, fileSize: file.size, fileType: file.type,
-        digitalSignature, txHash, innerQRData, outerQRData,
+        digitalSignature, innerQRData, outerQRData,
       });
+
+      if (!dbEntry.success) throw new Error("Backend save failed");
+      const txHash = dbEntry.txHash;
 
       setResult({ fileHash, ipfsHash, txHash, evidenceId, innerQRData, outerQRData });
       setStep(4);
-      toast.success("Evidence registered successfully!");
+      toast.success("Evidence recorded entirely gas-free!");
     } catch (err) {
       setError(err.message);
       toast.error("Process failed");

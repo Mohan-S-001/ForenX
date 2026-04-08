@@ -43,21 +43,16 @@ export default function TransportPortal() {
     setLoading(true);
     try {
       const newStatus = action === "accept" ? "IN_TRANSIT" : "COLLECTED";
-      // Blockchain transfer
-      if (action === "accept" && recipient) {
-        await transferEvidence(signer, {
-          evidenceId: evidence.evidenceId,
-          newOwner:   recipient,
-          newStatus:  1, // IN_TRANSIT
-          notes:      notes || "Transport accepted",
-        });
-      }
-      // Backend update
-      await API.patch(`/evidence/${evidence.evidenceId}/transfer`, {
+      
+      // Backend update (now handles blockchain tx gaslessly)
+      const { data } = await API.patch(`/evidence/${evidence.evidenceId}/transfer`, {
         newOwner: action === "accept" ? (recipient || user.walletAddress) : evidence.collectorWallet,
         status:   newStatus,
         notes:    notes || (action === "accept" ? "Accepted for transport" : "Rejected — returned to collector"),
       });
+
+      if (!data.success) throw new Error(data.message || "Transfer failed");
+
       toast.success(action === "accept" ? "Evidence accepted for transport" : "Evidence rejected");
       loadEvidence(evidence.evidenceId);
       setNotes(""); setRecipient("");

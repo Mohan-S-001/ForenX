@@ -9,4 +9,12 @@
 [32m[nodemon] starting `node src/index.js`[39m
 ◇ injected env (12) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 ✅ MongoDB connected: localhost
-🚀 ForenX API running on http://localhost:5000
+🚀 ForenX API running on http://localhost:5001
+IPFS upload failed (Request failed with status code 401). Falling back to MOCK CID.
+IPFS upload failed (Request failed with status code 401). Falling back to MOCK CID.
+IPFS upload failed (Request failed with status code 401). Falling back to MOCK CID.
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/index.js`[39m
+◇ injected env (12) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+✅ MongoDB connected: localhost
+🚀 ForenX API running on http://localhost:5001

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth, API } from "../contexts/AuthContext";
 import { useWeb3 } from "../contexts/Web3Context";
 import { getEvidence, getTransferLogs, STATUS_MAP } from "../services/blockchain";
@@ -6,7 +7,7 @@ import QRScanner from "../components/QRScanner";
 import ChainOfCustody from "../components/ChainOfCustody";
 import TamperAlert from "../components/TamperAlert";
 import { QrCode, Search, Database } from "lucide-react";
-import { formatDate, shortAddress } from "../services/crypto";
+import { formatDate, shortAddress, getIPFSUrl } from "../services/crypto";
 import toast from "react-hot-toast";
 
 export default function QRScanPage() {
@@ -16,6 +17,12 @@ export default function QRScanPage() {
   const [onChainLogs, setOnChainLogs] = useState([]);
   const [loading,     setLoading]     = useState(false);
   const [manualId,    setManualId]    = useState("");
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) loadAll(id);
+  }, [searchParams]);
 
   const loadAll = async (evidenceId) => {
     setLoading(true);
@@ -134,9 +141,9 @@ export default function QRScanPage() {
               )}
 
               <div className="grid-2" style={{ gap: 12 }}>
-                <div>
+                 <div>
                   <div className="form-label">IPFS CID</div>
-                  <a href={`https://gateway.pinata.cloud/ipfs/${evidence.ipfsHash}`} target="_blank" rel="noreferrer"
+                  <a href={getIPFSUrl(evidence.ipfsHash)} target="_blank" rel="noreferrer"
                     className="mono" style={{ fontSize: "0.75rem", wordBreak: "break-all" }}>
                     {evidence.ipfsHash}
                   </a>

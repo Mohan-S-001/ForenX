@@ -8,7 +8,7 @@ import { useDropzone } from "react-dropzone";
 export default function KYCPage() {
   const { user } = useAuth();
   const navigate  = useNavigate();
-  const [step, setStep] = useState(user?.kycStatus === "pending" ? 1 : 0);
+  const [step, setStep] = useState((user?.kycStatus === "pending" && user?.idProofCID) ? 1 : 0);
   const [idProof, setIdProof] = useState(null);
   const [selfie,  setSelfie]  = useState(null);
   const [loading, setLoading] = useState(false);

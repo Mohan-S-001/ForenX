@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { useAuth, API } from "../contexts/AuthContext";
 import { useWeb3 } from "../contexts/Web3Context";
 import { verifyEvidence, getEvidence, getTransferLogs } from "../services/blockchain";
-import { hashFile } from "../services/crypto";
+import { hashFile, getIPFSUrl } from "../services/crypto";
 import QRScanner from "../components/QRScanner";
 import TamperAlert from "../components/TamperAlert";
 import ChainOfCustody from "../components/ChainOfCustody";
-import { Microscope, QrCode, Search, Upload, Shield, CheckCircle } from "lucide-react";
+import { Microscope, QrCode, Search, Upload, Shield, CheckCircle, Truck } from "lucide-react";
 import toast from "react-hot-toast";
 import { useDropzone } from "react-dropzone";
 import { shortAddress } from "../services/crypto";
@@ -89,19 +89,13 @@ export default function LabPortal() {
 
       const tampered = verified === false;
 
-      // Blockchain verification
-      await verifyEvidence(signer, {
-        evidenceId: evidence.evidenceId,
-        computedHash,
-        reportIpfsHash,
-        reportFileHash,
-        tampered,
-      });
-
-      // Backend update
-      await API.patch(`/evidence/${evidence.evidenceId}/lab-report`, {
+      // Backend update (Now handles gasless blockchain tx under the hood)
+      const { data: dbEntry } = await API.patch(`/evidence/${evidence.evidenceId}/lab-report`, {
         reportIpfsHash, reportFileHash, tampered, notes: reportNotes,
       });
+
+      if (!dbEntry.success) throw new Error(dbEntry.message || "Lab report submission failed");
+
 
       toast.success(`Evidence marked as ${tampered ? "TAMPERED" : "VERIFIED"}`);
       loadEvidence(evidence.evidenceId);
@@ -115,7 +109,7 @@ export default function LabPortal() {
       <aside className="sidebar">
         <div className="sidebar-section">
           <div className="sidebar-title">Lab Portal</div>
-          <div className={`sidebar-link ${tab === "scan" ? "active" : ""}`} onClick={() => setTab("scan")}><QrCode size={16} /> Scan QR</div>
+          <div className={`sidebar-link ${tab === "scan" ? "active" : ""}`} onClick={() => setTab("scan")}><QrCode size={16} /> Scan QR Codes</div>
           <div className={`sidebar-link ${tab === "search" ? "active" : ""}`} onClick={() => setTab("search")}><Search size={16} /> Search ID</div>
         </div>
         <div className="sidebar-section">
@@ -129,13 +123,36 @@ export default function LabPortal() {
       <main className="main-content">
         <div className="page-header">
           <h1>🔬 Forensic Lab Portal</h1>
-          <p>Scan inner QR, re-hash evidence file, verify blockchain integrity</p>
+          <p>Scan Outer (Tracking) or Inner (Seal) QR codes to verify evidence</p>
         </div>
 
         {tab === "scan" && (
-          <div className="card" style={{ maxWidth: 500, marginBottom: 24 }}>
-            <h3 style={{ marginBottom: 16 }}>Scan INNER QR</h3>
-            <QRScanner onScan={handleScan} />
+          <div className="grid-2" style={{ gap: 24, marginBottom: 24 }}>
+            <div className="card">
+              <div className="flex items-center gap-2" style={{ marginBottom: 16 }}>
+                <div style={{ padding: 8, background: "rgba(59,130,246,0.1)", borderRadius: "var(--radius-sm)", color: "var(--accent-blue)" }}>
+                  <Truck size={20} />
+                </div>
+                <h3>1. Scan Tracking QR</h3>
+              </div>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: 16 }}>
+                Scan the <strong>Outer QR</strong> from the evidence bag to update transfer status or location.
+              </p>
+              <QRScanner onScan={handleScan} />
+            </div>
+
+            <div className="card">
+              <div className="flex items-center gap-2" style={{ marginBottom: 16 }}>
+                <div style={{ padding: 8, background: "rgba(139,92,246,0.1)", borderRadius: "var(--radius-sm)", color: "var(--accent-purple)" }}>
+                  <Shield size={20} />
+                </div>
+                <h3>2. Scan Seal QR</h3>
+              </div>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: 16 }}>
+                Scan the <strong>Inner QR</strong> (Seal) to verify tamper-proof integrity and blockchain hash.
+              </p>
+              <QRScanner onScan={handleScan} />
+            </div>
           </div>
         )}
         {tab === "search" && (
@@ -164,7 +181,7 @@ export default function LabPortal() {
                 <div><div className="form-label">Collector</div><div className="mono" style={{ fontSize: "0.8rem" }}>{shortAddress(evidence.collectorWallet)}</div></div>
                 <div>
                   <div className="form-label">IPFS File</div>
-                  <a href={`https://gateway.pinata.cloud/ipfs/${evidence.ipfsHash}`} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">Download from IPFS</a>
+                  <a href={getIPFSUrl(evidence.ipfsHash)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">Download from IPFS</a>
                 </div>
               </div>
               <div style={{ marginTop: 12 }}>

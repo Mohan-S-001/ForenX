@@ -9,11 +9,12 @@ const __dirname = path.dirname(__filename);
 async function main() {
   console.log("🚀 Deploying ForenXEvidence contract...");
 
-  const [deployer] = await hre.ethers.getSigners();
+  const signers = await hre.ethers.getSigners();
+  const deployer = signers[9]; // Use Account 9 to bypass known Hardhat scam list
   console.log(`📋 Deployer address: ${deployer.address}`);
   console.log(`💰 Balance: ${hre.ethers.formatEther(await hre.ethers.provider.getBalance(deployer.address))} ETH`);
 
-  const ForenXEvidence = await hre.ethers.getContractFactory("ForenXEvidence");
+  const ForenXEvidence = await hre.ethers.getContractFactory("ForenXEvidence", deployer);
   const contract = await ForenXEvidence.deploy();
   await contract.waitForDeployment();
 
