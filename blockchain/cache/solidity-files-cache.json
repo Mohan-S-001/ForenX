@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/nidhishsaravanan/Desktop/ForenX/blockchain/contracts/ForenXEvidence.sol": {
+      "lastModificationDate": 1775656232637,
+      "contentHash": "6d8e43b8f72244cbe7a4ee21bd32b115",
+      "sourceName": "contracts/ForenXEvidence.sol",
+      "solcConfig": {
+        "version": "0.8.19",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.19"
+      ],
+      "artifacts": [
+        "ForenXEvidence"
+      ]
+    }
+  }
+}
