@@ -39,6 +39,14 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ success: false, message: err.message || "Internal server error" });
 });
 
+import cors from "cors";
+
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 // ── Start ─────────────────────────────────────────────────────────────────────
 connectDB().then(() => {
   app.listen(PORT, () => console.log(`🚀 ForenX API running on http://localhost:${PORT}`));
