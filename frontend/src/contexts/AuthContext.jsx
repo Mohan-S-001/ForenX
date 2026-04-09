@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-const API = axios.create({ baseURL: "http://localhost:5001/api" });
-
+const API = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL}/api`
+});
 // Attach JWT to every request
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("forenx_token");
